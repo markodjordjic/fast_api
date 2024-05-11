@@ -2,7 +2,7 @@ import unittest
 from fastapi.testclient import TestClient
 from app.numerical_validations import app
 
-client = TestClient(app)
+client = TestClient(app=app)
 
 class TestExercise(unittest.TestCase):
 
@@ -27,8 +27,6 @@ class TestExercise(unittest.TestCase):
         actual = response.json()['detail'][0]['msg']
     
         self.assertEqual(actual, expected)
-
-
 
 
 def test_suite():
