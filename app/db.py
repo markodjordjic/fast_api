@@ -39,7 +39,7 @@ def delete_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     if db_user:
         crud.delete_user(db=db, user=db_user)
     
-    return {"ok": True}
+    return {"ok": True
 
 @app.get("/users/", response_model=list[schemas.User])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
