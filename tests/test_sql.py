@@ -1,6 +1,7 @@
 import unittest
 from fastapi.testclient import TestClient
-from app.body import app
+from app.db import app
+from app.sql.schemas import UserCreate
 
 
 class TestExercise(unittest.TestCase):
@@ -12,54 +13,39 @@ class TestExercise(unittest.TestCase):
     def setUp(self) -> None:
         self.app = TestClient(app=app)
 
-    def test_update_item(self) -> None:
+    def test_create_user(self) -> None:
 
-        response = self.app.put("/update_item/800/?q=How%20many%20are%20there?")
+        user_specification = {
+            'email': 'alexander.mccane@google.com',
+            'password': 'May122@@4'
+        }
 
-        expected = {
-            'item_id': 800, 
-            'q': 'How many are there?', 
-            'item': {
-                'name': 'Cake mould', 
-                'description': 
-                '8" diameter mould from metal.', 
-                'base_price': 499.0, 
-                'tax': 
-                18.0
-            }}
-        actual = response.json()
-    
-        self.assertEqual(actual, expected)
+        user_create = UserCreate(
+            **user_specification
+        )
 
-    def test_update_tagged_item(self) -> None:
-
-        response = self.app.put("/update_tagged_item/800/?q=How%20many%20are%20there?")
+        response = self.app.post("/users/", json=user_create.model_dump())
 
         expected = {
-            'item_id': 800, 
-            'q': 'How many are there?', 
-            'item': {
-                'name': 'Cake mould', 
-                'description': 
-                '8" diameter mould from metal.', 
-                'base_price': 499.0, 
-                'tax':  18.0,
-                'tags': [
-                    'discount', 'standard offer'
-                ]
-            }
+            'email': 'alexander.mccane@google.com', 
+            'id': 1, 
+            'is_active': True, 
+            'items': []
         }
         actual = response.json()
     
         self.assertEqual(actual, expected)
 
+        #response = self.app.post("/delete_user/", json=user_create.model_dump())
 
+    @classmethod
+    def tearDownClass(cls) -> None:
+        return super().tearDownClass()
 
 def test_suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(TestExercise('test_update_item'))
-    suite.addTest(TestExercise('test_update_tagged_item'))
+    suite.addTest(TestExercise('test_create_user'))
 
     return suite
 
