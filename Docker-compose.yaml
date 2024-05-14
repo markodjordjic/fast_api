@@ -1,10 +1,10 @@
 version: '3.11'
 
 services:
-  fastapi-app:
+  fastapi-lessons:
     build:
       context: .
       dockerfile: Dockerfile
-    command: uvicorn string_validations:app --host 0.0.0.0 --port 8000
+    command: uvicorn "app.requests:app" --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
