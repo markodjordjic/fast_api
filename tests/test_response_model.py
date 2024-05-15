@@ -14,11 +14,19 @@ class TestExercise(unittest.TestCase):
 
     def test_create_item(self) -> None:
 
-        specification = { 
+        expected = {
             "name": "Chips",
             "description": "Potato chips, salted",
             "price": 99.0,
             "tax": 11.0,
+            "tags": []            
+        }
+
+        specification = { 
+            "name": "Chips",
+            "description": "Potato chips, salted",
+            "price": 99.0,
+            "tax": 11.0
         }
 
         item = Item(**specification)
@@ -31,7 +39,19 @@ class TestExercise(unittest.TestCase):
 
     def test_read_items(self) -> None:
 
-        pass
+        expected = [{
+            'name': 'Portal Gun',
+            'description': None,
+            'price': 42.0,
+            'tax': None,
+            'tags': []
+        }]
+
+        response = self.app.get("/items/")
+
+        actual = response.json()
+
+        self.assertEqual(actual, expected)
 
 
 def test_suite():
