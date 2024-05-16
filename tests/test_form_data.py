@@ -13,42 +13,25 @@ class TestExercise(unittest.TestCase):
     def setUp(self) -> None:
         self.app = TestClient(app=app)
 
-    def test_update_items(self) -> None:
+    def test_login(self) -> None:
 
-        expected = status.HTTP_201_CREATED
+        expected = {'username': 'some_username'}
 
-        response = self.app.post("/items/?name=test")
+        specification = {
+            "username": "some_username",
+            "password": "some_password"
+        }
 
-        actual = response.status_code
-    
-        self.assertEqual(actual, expected)
+        response = self.app.post("/login/", data=specification)
 
-    def test_get_or_create_existing_task(self) -> None:
-
-        expected = status.HTTP_200_OK
-
-        response = self.app.put("get-or-create-task/foo")
-
-        actual = response.status_code
-    
-        self.assertEqual(actual, expected)
-
-    def test_get_or_create_new_task(self) -> None:
-
-        expected = status.HTTP_201_CREATED
-
-        response = self.app.put("get-or-create-task/fighters")
-
-        actual = response.status_code
+        actual = response.json()
     
         self.assertEqual(actual, expected)
 
 def test_suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(TestExercise('test_update_items'))
-    suite.addTest(TestExercise('test_get_or_create_existing_task'))
-    suite.addTest(TestExercise('test_get_or_create_new_task'))
+    suite.addTest(TestExercise('test_login'))
 
     return suite
 

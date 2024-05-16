@@ -1,19 +1,14 @@
-from fastapi import FastAPI, Response, status
+from typing import Annotated
+
+from fastapi import FastAPI, Form
 
 app = FastAPI()
 
-tasks = {"foo": "Listen to the Bar Fighters"}
 
-@app.post("/items/", status_code=status.HTTP_201_CREATED)
-async def create_item(name: str):
+@app.post("/login/")
+async def login(
+    username: Annotated[str, Form()], 
+    password: Annotated[str, Form()]
+):
 
-    return {"name": name}
-
-@app.put("/get-or-create-task/{task_id}", status_code=200)
-def get_or_create_task(task_id: str, response: Response):
-    
-    if task_id not in tasks:
-        tasks[task_id] = "This didn't exist before"
-        response.status_code = status.HTTP_201_CREATED
-    
-    return tasks[task_id]
+    return {"username": username}
