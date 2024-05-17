@@ -1,14 +1,17 @@
 from typing import Annotated
 
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, File, Form, UploadFile
 
 app = FastAPI()
 
 
-@app.post("/login/")
-async def login(
-    username: Annotated[str, Form()], 
-    password: Annotated[str, Form()]
+@app.post("/files/")
+async def create_file(
+    file: Annotated[bytes, File()],
+    fileb: Annotated[UploadFile, File()],
+    token: Annotated[str, Form()],
 ):
-
-    return {"username": username}
+    return {
+        "file_size": len(file),
+        "token": token
+    }

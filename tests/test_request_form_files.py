@@ -1,6 +1,8 @@
 import unittest
 from fastapi.testclient import TestClient
+from fastapi import UploadFile
 from app.request_forms_files import app
+import tempfile
 
 
 class TestExercise(unittest.TestCase):
@@ -12,54 +14,32 @@ class TestExercise(unittest.TestCase):
     def setUp(self) -> None:
         self.app = TestClient(app=app)
 
-    def test_update_item(self) -> None:
+    def test_create_file(self) -> None:
 
-        response = self.app.put("/update_item/800/?q=How%20many%20are%20there?")
+        expected = {}
 
-        expected = {
-            'item_id': 800, 
-            'q': 'How many are there?', 
-            'item': {
-                'name': 'Cake mould', 
-                'description': 
-                '8" diameter mould from metal.', 
-                'base_price': 499.0, 
-                'tax': 
-                18.0
-            }}
-        actual = response.json()
-    
-        self.assertEqual(actual, expected)
+        with tempfile.SpooledTemporaryFile(mode='wb') as file:
+            file.write(b'Hello World!')
+            file.seek(0) 
 
-    def test_update_tagged_item(self) -> None:
-
-        response = self.app.put("/update_tagged_item/800/?q=How%20many%20are%20there?")
-
-        expected = {
-            'item_id': 800, 
-            'q': 'How many are there?', 
-            'item': {
-                'name': 'Cake mould', 
-                'description': 
-                '8" diameter mould from metal.', 
-                'base_price': 499.0, 
-                'tax':  18.0,
-                'tags': [
-                    'discount', 'standard offer'
-                ]
-            }
+        payload = {
+            "file": "file",
+            "fileb": UploadFile(file=file),
+            "token": "token"
         }
+
+        response = self.app.post("/files/", data=payload)
+        response.json()['detail'][0]['input']
+
         actual = response.json()
     
         self.assertEqual(actual, expected)
-
 
 
 def test_suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(TestExercise('test_update_item'))
-    suite.addTest(TestExercise('test_update_tagged_item'))
+    suite.addTest(TestExercise('test_create_file'))
 
     return suite
 
