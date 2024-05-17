@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from app.request_files import app
 import tempfile
 
+
 def create_file():
 
     content = [
@@ -46,18 +47,23 @@ class TestExercise(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_create_upload_file(self) -> None:
-        #TODO: Make the test pass.
+        """Test is failing!
+        
+        """
 
         expected = {'filename': 'test_file'}
 
         with tempfile.SpooledTemporaryFile(mode='wb') as fp:
-            fp.write(b'Hello world!')
+            fp.write(b'Hello World!')
             fp.seek(0)
 
-        upload_file = UploadFile(file=fp)
-        upload_file.filename = 'test_file'
+        upload_file = UploadFile(file=fp, filename='test_file.txt')
 
-        response = self.app.post("/upload_file/", data={'file': upload_file})
+        data = {
+            "file": upload_file
+        }
+        
+        response = self.app.post("/upload_file/", data=data)
 
         actual = response.json()
     
