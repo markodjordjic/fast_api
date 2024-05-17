@@ -57,7 +57,7 @@ class TestExercise(unittest.TestCase):
         upload_file = UploadFile(file=fp)
         upload_file.filename = 'test_file'
 
-        response = self.app.post("/upload_file/", data={"file": upload_file})
+        response = self.app.post("/upload_file/", params={"file": upload_file})
 
         actual = response.json()
     
