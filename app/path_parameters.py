@@ -11,9 +11,6 @@ fake_items_db = [
 
 @app.get("/items/")
 async def read_item(skip: int = 0, limit: int = 10):
-    """_summary_
-
-    """
     
     return fake_items_db[skip : skip + limit]
 
