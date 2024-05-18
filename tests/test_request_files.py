@@ -38,7 +38,7 @@ class TestExercise(unittest.TestCase):
 
         expected = {'file_size': 87}
 
-        response = self.app.post("/files/", data={"file":self.test_data})
+        response = self.app.post("/files/", data={"file": self.test_data})
 
         actual = response.json()
 
@@ -49,25 +49,42 @@ class TestExercise(unittest.TestCase):
     def test_create_upload_file(self) -> None:
         """Test is failing!
         
+        Look test below for workaround.
+
         """
 
         expected = {'filename': 'test_file'}
 
-        with tempfile.SpooledTemporaryFile(mode='wb') as fp:
+        with tempfile.SpooledTemporaryFile(mode='wb+') as fp:
             fp.write(b'Hello World!')
             fp.seek(0)
-
-        upload_file = UploadFile(file=fp, filename='test_file.txt')
-
-        data = {
-            "file": upload_file
-        }
-        
-        response = self.app.post("/upload_file/", data=data)
+            upload_file = {'file': UploadFile(fp, filename='t.txt')}            
+            response = self.app.post(
+                "/upload_file/", 
+                data=upload_file
+            )
 
         actual = response.json()
     
         self.assertEqual(actual, expected)
+
+    def test_create_upload_file_workaround(self) -> None:
+
+        expected = {'filename': 'test_file.txt'}
+
+        with tempfile.SpooledTemporaryFile(mode='wb+') as fp:
+            fp.write(b'Hello World!')
+            fp.seek(0)
+            upload_file = {'file': ('test_file.txt', fp)}            
+            response = self.app.post(
+                "/upload_file/", 
+                files=upload_file
+            )
+
+        actual = response.json()
+    
+        self.assertEqual(actual, expected)
+
 
 
 def test_suite():
@@ -75,6 +92,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(TestExercise('test_create_file'))
     suite.addTest(TestExercise('test_create_upload_file'))
+    suite.addTest(TestExercise('test_create_upload_file_workaround'))
 
     return suite
 
