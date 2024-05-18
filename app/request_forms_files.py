@@ -13,5 +13,6 @@ async def create_file(
 ):
     return {
         "file_size": len(file),
-        "token": token
+        "token": token,
+        "fileb_content_type": fileb.content_type
     }
