@@ -60,7 +60,7 @@ class TestExercise(unittest.TestCase):
             fp.seek(0)
             upload_file = {'file': UploadFile(fp, filename='t.txt')}            
             response = self.app.post(
-                "/upload_file/", 
+                "/upload_file/",
                 data=upload_file
             )
 
