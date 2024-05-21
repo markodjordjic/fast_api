@@ -1,6 +1,6 @@
 import unittest
 from fastapi.testclient import TestClient
-from app.body import app
+from app.path_operations import app
 
 
 class TestExercise(unittest.TestCase):
@@ -12,30 +12,54 @@ class TestExercise(unittest.TestCase):
     def setUp(self) -> None:
         self.app = TestClient(app=app)
 
-    def test_update_item(self) -> None:
+    def test_create_item(self) -> None:
 
-        response = self.app.put("/update_item/800/?q=How%20many%20are%20there?")
+        expected = 201
+
+        payload = {
+            'name': 'Chips',
+            'description': 'Salted potato chips',
+            'price': 9.,
+            'tax': 11.,
+            'tags': []
+        }
+
+        response = self.app.post("/items/", json=payload)
+
+        actual = response.status_code
+    
+        self.assertEqual(actual, expected)
+
+    def test_create_item_wh_tag(self) -> None:
 
         expected = {
-            'item_id': 800, 
-            'q': 'How many are there?', 
-            'item': {
-                'name': 'Cake mould', 
-                'description': 
-                '8" diameter mould from metal.', 
-                'base_price': 499.0, 
-                'tax': 
-                18.0
-            }}
+            'name': 'Chips',
+            'description': 'Salted potato chips',
+            'price': 9.,
+            'tax': 11.,
+            'tags': []
+        }
+
+        specification = {
+            'name': 'Chips',
+            'description': 'Salted potato chips',
+            'price': 9.,
+            'tax': 11.
+        }
+
+        response = self.app.post("/items_wh_tag/", json=specification)
+
         actual = response.json()
     
         self.assertEqual(actual, expected)
 
 
+
 def test_suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(TestExercise('test_update_item'))
+    suite.addTest(TestExercise('test_create_item'))
+    suite.addTest(TestExercise('test_create_item_wh_tag'))
 
     return suite
 

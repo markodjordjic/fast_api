@@ -1,14 +1,24 @@
-from typing import Annotated
-
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, status
+from pydantic import BaseModel
 
 app = FastAPI()
 
 
-@app.post("/login/")
-async def login(
-    username: Annotated[str, Form()], 
-    password: Annotated[str, Form()]
-):
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+    tags: set[str] = set()
 
-    return {"username": username}
+
+@app.post("/items/", response_model=Item, status_code=status.HTTP_201_CREATED)
+async def create_item(item: Item):
+
+    return item
+
+
+@app.post("/items_wh_tag/", response_model=Item, tags=["items"])
+async def create_item(item: Item):
+
+    return item
