@@ -12,54 +12,33 @@ class TestExercise(unittest.TestCase):
     def setUp(self) -> None:
         self.app = TestClient(app=app)
 
-    def test_create_item(self) -> None:
-
-        expected = 201
-
-        payload = {
-            'name': 'Chips',
-            'description': 'Salted potato chips',
-            'price': 9.,
-            'tax': 11.,
-            'tags': []
-        }
-
-        response = self.app.post("/items/", json=payload)
-
-        actual = response.status_code
-    
-        self.assertEqual(actual, expected)
-
-    def test_create_item_wh_tag(self) -> None:
+    def test_update_item(self) -> None:
 
         expected = {
-            'name': 'Chips',
-            'description': 'Salted potato chips',
-            'price': 9.,
-            'tax': 11.,
-            'tags': []
+            'test': {
+                'title': 'Seinfeld Chronicles',
+                'timestamp': '2024-05-21T00:00:00',
+                'description': 'The Show about Nothing'
+            }
         }
 
         specification = {
-            'name': 'Chips',
-            'description': 'Salted potato chips',
-            'price': 9.,
-            'tax': 11.
+            'title': 'Seinfeld Chronicles',
+            'timestamp': '2024-05-21 00:00:00',
+            'description': 'The Show about Nothing'
         }
 
-        response = self.app.post("/items_wh_tag/", json=specification)
+        response = self.app.put("/items/test", json=specification)
 
         actual = response.json()
     
-        self.assertEqual(actual, expected)
-
+        self.assertDictEqual(actual, expected)
 
 
 def test_suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(TestExercise('test_create_item'))
-    suite.addTest(TestExercise('test_create_item_wh_tag'))
+    suite.addTest(TestExercise('test_update_item'))
 
     return suite
 
