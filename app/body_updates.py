@@ -37,10 +37,21 @@ async def read_item(item_id: str):
     return items[item_id]
 
 
-@app.put("/items/{item_id}", response_model=Item)
+@app.put("/update_items/{item_id}", response_model=Item)
 async def update_item(item_id: str, item: Item):
 
     update_item_encoded = jsonable_encoder(item)
     items[item_id] = update_item_encoded
 
-    return items
+    return items[item_id]
+
+@app.patch("/items/{item_id}", response_model=Item)
+async def partial_update_item(item_id: str, item: Item):
+
+    stored_item_data = items[item_id]
+    stored_item_model = Item(**stored_item_data)
+    update_data = item.model_dump(exclude_unset=True)
+    updated_item = stored_item_model.model_copy(update=update_data)
+    items[item_id] = jsonable_encoder(updated_item)
+
+    return items[item_id]
