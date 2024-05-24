@@ -1,8 +1,8 @@
 import unittest
 from copy import deepcopy
 from fastapi.testclient import TestClient
-from app.dependecies.dependencies import app
-from app.dependecies.sub_dependencies import app
+from app.dependencies.dependencies import app as dependency_app
+from app.dependencies.sub_dependencies import app as sub_dependency_app
 
 
 class TestDependencies(unittest.TestCase):
@@ -11,7 +11,7 @@ class TestDependencies(unittest.TestCase):
         super().__init__(methodName)
  
     def setUp(self) -> None:
-        self.app = TestClient(app=app)
+        self.app = TestClient(app=dependency_app)
 
     def test_read_items(self) -> None:
 
@@ -62,7 +62,7 @@ class TestSubDependencies(unittest.TestCase):
         super().__init__(methodName)
  
     def setUp(self) -> None:
-        self.app = TestClient(app=app)
+        self.app = TestClient(app=sub_dependency_app)
 
     def test_read_query_wh_query(self) -> None:
 
