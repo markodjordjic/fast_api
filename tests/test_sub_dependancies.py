@@ -1,7 +1,7 @@
 import unittest
 from copy import deepcopy
 from fastapi.testclient import TestClient
-from app.dependecies.dependencies import app
+from app.dependecies.sub_dependencies import app
 
 
 class TestExercise(unittest.TestCase):
@@ -12,18 +12,14 @@ class TestExercise(unittest.TestCase):
     def setUp(self) -> None:
         self.app = TestClient(app=app)
 
-    def test_read_items(self) -> None:
+    def test_read_query_wh_query(self) -> None:
 
         expected = {
-            'q': 'test query',
-            'skip': 5,
-            'limit': 20
+            'q_or_cookie': 'test query'
         }
 
         parameters = {
-            'q': 'test query',
-            'skip': 5,
-            'limit': 20
+            'q': 'test query'
         }
 
         response = self.app.get("/items/", params=parameters)
@@ -32,23 +28,13 @@ class TestExercise(unittest.TestCase):
     
         self.assertEqual(actual, expected)
 
-    def test_read_items_wh_commons(self) -> None:
+    def test_read_query_wo_query(self) -> None:
 
         expected = {
-            'q': 'test query',
-            'items': [
-                {'item_name': 'Foo'},
-                {'item_name': 'Bar'}
-            ]
+            'q_or_cookie': None
         }
 
-        parameters = {
-            'q': 'test query',
-            'skip': 0,
-            'limit': 2
-        }
-
-        response = self.app.get("/items_wh_commons/", params=parameters)
+        response = self.app.get("/items/")
 
         actual = response.json()
     
@@ -59,8 +45,8 @@ class TestExercise(unittest.TestCase):
 def test_suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(TestExercise('test_read_items'))
-    suite.addTest(TestExercise('test_read_items_wh_commons'))
+    suite.addTest(TestExercise('test_read_query_wh_query'))
+    suite.addTest(TestExercise('test_read_query_wo_query'))
  
     return suite
 
