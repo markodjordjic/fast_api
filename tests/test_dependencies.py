@@ -3,7 +3,8 @@ from copy import deepcopy
 from fastapi.testclient import TestClient
 from app.dependencies.dependencies import app as dependency_app
 from app.dependencies.sub_dependencies import app as sub_dependency_app
-
+from app.dependencies.path_operation_decorators import app as \
+    path_operation_app
 
 class TestDependencies(unittest.TestCase):
 
@@ -92,6 +93,46 @@ class TestSubDependencies(unittest.TestCase):
     
         self.assertEqual(actual, expected)
 
+class TestPathOperationDecorators(unittest.TestCase):
+
+    def __init__(self, methodName: str = "runTest") -> None:
+        super().__init__(methodName)
+ 
+    def setUp(self) -> None:
+        self.app = TestClient(app=path_operation_app)
+
+    def test_read_items(self) -> None:
+
+        expected = [{'item': 'Foo'}, {'item': 'Bar'}]
+
+        headers = {
+            'x-token': 'fake-super-secret-token',
+            'x-key': 'fake-super-secret-key'
+        }
+
+        response = self.app.get("/items/", headers=headers)
+
+        actual = response.json()
+    
+        self.assertListEqual(actual, expected)
+
+    def test_read_items_wrong_header(self) -> None:
+
+        expected = 400
+
+        headers = {
+            'x-token': 'some-token',
+            'x-key': 'some-key'
+        }
+
+        response = self.app.get("/items/", headers=headers)
+
+        actual = response.status_code
+    
+        self.assertEqual(actual, expected)
+
+
+
 def test_suite():
 
     suite = unittest.TestSuite()
@@ -99,7 +140,8 @@ def test_suite():
     suite.addTest(TestDependencies('test_read_items_wh_commons'))
     suite.addTest(TestSubDependencies('test_read_query_wh_query'))
     suite.addTest(TestSubDependencies('test_read_query_wo_query'))
-
+    suite.addTest(TestPathOperationDecorators('test_read_items'))
+    suite.addTest(TestPathOperationDecorators('test_read_items_wrong_header'))
  
     return suite
 
