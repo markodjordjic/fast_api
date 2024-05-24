@@ -5,6 +5,9 @@ from app.dependencies.dependencies import app as dependency_app
 from app.dependencies.sub_dependencies import app as sub_dependency_app
 from app.dependencies.path_operation_decorators import app as \
     path_operation_app
+from app.dependencies.global_dependencies import app as \
+    global_dependencies_app
+
 
 class TestDependencies(unittest.TestCase):
 
@@ -132,6 +135,44 @@ class TestPathOperationDecorators(unittest.TestCase):
         self.assertEqual(actual, expected)
 
 
+class TestGlobalDependencies(unittest.TestCase):
+
+    def __init__(self, methodName: str = "runTest") -> None:
+        super().__init__(methodName)
+ 
+    def setUp(self) -> None:
+        self.app = TestClient(app=global_dependencies_app)
+
+    def test_read_items(self) -> None:
+
+        expected = [{'item': 'Portal Gun'}, {'item': 'Plumbus'}]
+
+        headers = {
+            'x-token': 'fake-super-secret-token',
+            'x-key': 'fake-super-secret-key'
+        }
+
+        response = self.app.get("/items/", headers=headers)
+
+        actual = response.json()
+    
+        self.assertListEqual(actual, expected)
+
+    def test_read_items_wrong_header(self) -> None:
+
+        expected = 400
+
+        headers = {
+            'x-token': 'some-token',
+            'x-key': 'some-key'
+        }
+
+        response = self.app.get("/items/", headers=headers)
+
+        actual = response.status_code
+    
+        self.assertEqual(actual, expected)
+
 
 def test_suite():
 
@@ -142,6 +183,8 @@ def test_suite():
     suite.addTest(TestSubDependencies('test_read_query_wo_query'))
     suite.addTest(TestPathOperationDecorators('test_read_items'))
     suite.addTest(TestPathOperationDecorators('test_read_items_wrong_header'))
+    suite.addTest(TestGlobalDependencies('test_read_items'))
+    suite.addTest(TestGlobalDependencies('test_read_items_wrong_header'))
  
     return suite
 
