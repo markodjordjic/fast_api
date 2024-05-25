@@ -7,7 +7,11 @@ from app.dependencies.path_operation_decorators import app as \
     path_operation_app
 from app.dependencies.global_dependencies import app as \
     global_dependencies_app
-
+from app.dependencies.yield_dependencies import app as \
+    yield_dependencies_app
+from app.dependencies.yield_dependencies_internal import app as \
+    yield_dependencies_internal_app
+from app.dependencies.yield_dependencies_internal import InternalError
 
 class TestDependencies(unittest.TestCase):
 
@@ -174,6 +178,84 @@ class TestGlobalDependencies(unittest.TestCase):
         self.assertEqual(actual, expected)
 
 
+class TestYieldDependencies(unittest.TestCase):
+
+    def __init__(self, methodName: str = "runTest") -> None:
+        super().__init__(methodName)
+ 
+    def setUp(self) -> None:
+        self.app = TestClient(app=yield_dependencies_app)
+
+    def test_read_items(self) -> None:
+
+        expected = {"description": "Gun to create portals", "owner": "Rick"}
+
+        response = self.app.get("/items/portal-gun")
+
+        actual = response.json()
+    
+        self.assertDictEqual(actual, expected)
+
+    def test_read_items_owner_error(self) -> None:
+
+        expected = b'{"detail":"Owner error: Rick"}'
+
+        response = self.app.get("/items/plumbus")
+
+        actual = response.content
+    
+        self.assertEqual(actual, expected)
+
+    def test_read_items_error(self) -> None:
+
+        expected = 404
+
+        response = self.app.get("/items/some-item")
+
+        actual = response.status_code
+    
+        self.assertEqual(actual, expected)
+
+
+class TestYieldDependenciesInternal(unittest.TestCase):
+
+    def __init__(self, methodName: str = "runTest") -> None:
+        super().__init__(methodName)
+ 
+    def setUp(self) -> None:
+        self.app = TestClient(app=yield_dependencies_internal_app)
+
+    def test_get_items(self) -> None:
+
+        expected = 'The portal gun is too dangerous to be owned by Rick'
+  
+        with self.assertRaises(InternalError) as context:
+            self.app.get("/items/portal-gun")
+        actual = context.exception.args[0]     
+
+        self.assertEqual(expected, actual)
+
+    def test_get_items_correct(self) -> None:
+
+        expected = b'"plumbus"'
+  
+        response = self.app.get("/items/plumbus")
+
+        actual = response.content 
+
+        self.assertEqual(expected, actual)
+
+    def test_get_items_not_correct(self) -> None:
+
+        expected = 404
+  
+        response = self.app.get("/items/plum")
+
+        actual = response.status_code 
+
+        self.assertEqual(expected, actual)
+
+
 def test_suite():
 
     suite = unittest.TestSuite()
@@ -185,7 +267,13 @@ def test_suite():
     suite.addTest(TestPathOperationDecorators('test_read_items_wrong_header'))
     suite.addTest(TestGlobalDependencies('test_read_items'))
     suite.addTest(TestGlobalDependencies('test_read_items_wrong_header'))
- 
+    suite.addTest(TestYieldDependencies('test_read_items'))
+    suite.addTest(TestYieldDependencies('test_read_items_owner_error'))
+    suite.addTest(TestYieldDependencies('test_read_items_error'))
+    suite.addTest(TestYieldDependenciesInternal('test_get_items'))
+    suite.addTest(TestYieldDependenciesInternal('test_get_items_correct'))
+    suite.addTest(TestYieldDependenciesInternal('test_get_items_not_correct'))
+
     return suite
 
 if __name__ == '__main__':
