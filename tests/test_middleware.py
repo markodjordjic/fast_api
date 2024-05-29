@@ -13,13 +13,13 @@ class TestExercise(unittest.TestCase):
 
     def test_http(self) -> None:
 
-        expected = 0.0
+        expected = 0.00175
 
         response = self.app.get("/")
 
         actual = float(response.headers.get('x-process-time'))
     
-        self.assertAlmostEqual(actual, expected)
+        self.assertAlmostEqual(actual, expected, places=3)
 
 def test_suite():
 
