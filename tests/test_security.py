@@ -102,16 +102,72 @@ class TestUserPWJWTApp(unittest.TestCase):
     def setUp(self) -> None:
         self.app = TestClient(app=user_pw_jwt_app)
 
-    def test_read_users_me(self) -> None:
-
-        expected = {'access_token': 'johndoe', 'token_type': 'bearer'}
+    def _authorize(self) -> str:
 
         payload = {
             "username": "johndoe",
             "password": "secret"            
         }
 
-        response = self.app.get("/users/me")
+        authorization = self.app.post("/token", data=payload)
+        token_type = authorization.json()['token_type']
+        access_token = authorization.json()['access_token']
+        token_type_and_token = f"{token_type} {access_token}"
+
+        return token_type_and_token
+
+
+    def test_login_for_access_token(self) -> None:
+
+        expected = 200
+
+        payload = {
+            "username": "johndoe",
+            "password": "secret"            
+        }
+
+        response = self.app.post("/token", data=payload)
+
+        actual = response.status_code
+    
+        self.assertEqual(actual, expected)
+
+    def test_read_users_me(self) -> None:
+
+        expected = [{'item_id': 'Foo', 'owner': 'johndoe'}]
+
+        token_type_and_token = self._authorize()
+        
+        response = self.app.get(
+            url='/users/me/items', 
+            headers={
+                'accept': 'application/json',
+                'Authorization': token_type_and_token 
+            }
+        )            
+
+        actual = response.json()
+    
+        self.assertEqual(actual, expected)
+
+    def test_read_own_items(self) -> None:
+
+        expected = {
+            'username': 'johndoe', 
+            'email': 'johndoe@example.com',
+            'full_name': 'John Doe',
+            'disabled': False
+        }
+
+        token_type_and_token = self._authorize()
+
+        response = self.app.get(
+            url='/users/me/', 
+            headers={
+                'accept': 'application/json',
+                'Authorization': token_type_and_token 
+            }
+        )            
 
         actual = response.json()
     
@@ -127,8 +183,10 @@ def test_suite():
     suite.addTest(TestUserPWApp('test_login_wrong_pw'))
     suite.addTest(TestUserPWApp('test_login_wrong_un'))
     suite.addTest(TestUserPWApp('test_login_wrong_un'))
+    suite.addTest(TestUserPWJWTApp('test_login_for_access_token'))
     suite.addTest(TestUserPWJWTApp('test_read_users_me'))
-    
+    suite.addTest(TestUserPWJWTApp('test_read_own_items'))
+
     return suite
 
 if __name__ == '__main__':
