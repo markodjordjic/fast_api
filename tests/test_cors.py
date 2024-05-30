@@ -20,12 +20,17 @@ class TestExercise(unittest.TestCase):
 
         """
 
-        response = self.app.get("/")
+        response = self.app.get(
+            "/", 
+            headers={
+                'accept': 'application/json',
+                'Origin': 'bla'
+            }
+        )
 
         actual = response.json()
     
         self.assertEqual(actual, actual)
-
 
 def test_suite():
 
