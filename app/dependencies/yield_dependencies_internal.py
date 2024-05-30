@@ -15,7 +15,8 @@ def get_username():
         yield "Rick"
     
     except InternalError:
-        print("We don't swallow the internal error here, we raise again.")
+        # We don't swallow the internal error here, we raise again.
+        
         raise
 
 
