@@ -1,12 +1,9 @@
 FROM python:3.11
 
-WORKDIR /opt
+WORKDIR /opt/app
 
-COPY ./app /opt/app
-COPY ./tests /opt/tests
-COPY requirements.txt /opt/requirements.txt
+COPY app /opt/app
+COPY requirements.txt /opt/app/requirements.txt
 
-ENV PYTHONPATH "${PYTHONPATH}:opt"
-ENV PYTHONUNBUFFERED 1
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN pip install -r requirements.txt
