@@ -7,7 +7,7 @@ app = FastAPI()
 
 data = {
     "plumbus": {"description": "Freshly pickled plumbus", "owner": "Morty"},
-    "portal-gun": {"description": "Gun to create portals", "owner": "Rick"},
+    "portal-gun": {"description": "Gun to create portals", "owner": "Rick"}
 }
 
 
