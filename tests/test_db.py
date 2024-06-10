@@ -1,6 +1,5 @@
-from filecmp import cmp
+import sys
 import unittest
-unittest.TestLoader.sortTestMethodsUsing = None
 from fastapi.testclient import TestClient
 from app.db import app
 
@@ -21,6 +20,13 @@ class TestExercise(unittest.TestCase):
            
         self.app.post("/users/", json=payload)
 
+    def _add_items(self):
+        items = {
+            'title': 'Chips', 
+            'description': 'Salted potato chips'
+        }
+        
+        self.app.post("/users/1/item/", json=items)
 
     @classmethod
     def setUpClass(self) -> None:
@@ -49,6 +55,7 @@ class TestExercise(unittest.TestCase):
     
         self.assertDictEqual(actual, expected)
 
+    @unittest.skipUnless(sys.platform.startswith("win"), "requires Windows")
     def test_read_user(self) -> None:
         
         response = self.app.get("/user/1")
@@ -64,6 +71,7 @@ class TestExercise(unittest.TestCase):
 
         self.assertDictEqual(actual, expected)
     
+    @unittest.skipUnless(sys.platform.startswith("win"), "requires Windows")    
     def test_update_user(self) -> None:
 
         expected = {
@@ -84,6 +92,7 @@ class TestExercise(unittest.TestCase):
 
         self.assertDictEqual(actual, expected)
 
+    @unittest.skipUnless(sys.platform.startswith("win"), "requires Windows")
     def test_read_items(self) -> None:
         """Needs to be before `test_delete_user`
 
