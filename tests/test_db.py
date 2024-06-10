@@ -68,8 +68,7 @@ class TestExercise(unittest.TestCase):
 
         expected = {
             'title': 'Chips', 
-            'description': 
-            'Salted potato chips', 
+            'description': 'Salted potato chips', 
             'id': 1, 
             'owner_id': 1
         }
@@ -84,6 +83,32 @@ class TestExercise(unittest.TestCase):
         actual = response.json()
 
         self.assertDictEqual(actual, expected)
+
+    def test_read_items(self) -> None:
+        """Needs to be before `test_delete_user`
+
+        """
+
+        payload = {
+            'skip': 0,
+            'limit': 5
+        }
+   
+        response = self.app.get("/items/", params=payload)
+
+        expected = [
+            {
+                'title': 'Chips', 
+                'description': 
+                'Salted potato chips', 
+                'id': 1, 
+                'owner_id': 1
+            }
+        ]
+
+        actual = response.json()
+    
+        self.assertEqual(actual, expected)
 
     def test_delete_user(self) -> None:
 
@@ -101,21 +126,6 @@ class TestExercise(unittest.TestCase):
         self.assertEqual(actual, expected)
 
 
-    def test_read_items(self) -> None:
-
-        payload = {
-            'skip': 0,
-            'limit': 5
-        }
-   
-        response = self.app.get("/items/", params=payload)
-
-        expected = 'User alexander.mccane@google.com deleted.'
-
-        actual = response.json()
-    
-        self.assertEqual(actual, expected)
-
 
 def test_suite():
 
@@ -123,8 +133,8 @@ def test_suite():
     suite.addTest(TestExercise('test_create_user'))
     suite.addTest(TestExercise('test_read_user'))
     suite.addTest(TestExercise('test_update_user'))
-    suite.addTest(TestExercise('test_delete_user'))
     suite.addTest(TestExercise('test_read_items'))
+    suite.addTest(TestExercise('test_delete_user'))
     
     return suite
 
