@@ -1,3 +1,4 @@
+from filecmp import cmp
 import unittest
 unittest.TestLoader.sortTestMethodsUsing = None
 from fastapi.testclient import TestClient
@@ -15,7 +16,6 @@ class TestExercise(unittest.TestCase):
         payload = {
             'email': 'test.user@someweb.com',
             'password': 'this_is_a_trivial_password',
-            'id': 800,
             'is_active': True
         }
            
@@ -85,7 +85,6 @@ class TestExercise(unittest.TestCase):
 
         self.assertDictEqual(actual, expected)
 
-
     def test_delete_user(self) -> None:
 
         payload = {
@@ -102,6 +101,22 @@ class TestExercise(unittest.TestCase):
         self.assertEqual(actual, expected)
 
 
+    def test_read_items(self) -> None:
+
+        payload = {
+            'skip': 0,
+            'limit': 5
+        }
+   
+        response = self.app.get("/items/", params=payload)
+
+        expected = 'User alexander.mccane@google.com deleted.'
+
+        actual = response.json()
+    
+        self.assertEqual(actual, expected)
+
+
 def test_suite():
 
     suite = unittest.TestSuite()
@@ -109,6 +124,7 @@ def test_suite():
     suite.addTest(TestExercise('test_read_user'))
     suite.addTest(TestExercise('test_update_user'))
     suite.addTest(TestExercise('test_delete_user'))
+    suite.addTest(TestExercise('test_read_items'))
     
     return suite
 
