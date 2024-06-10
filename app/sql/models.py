@@ -1,7 +1,12 @@
+"""Definition of tables
+
+"""
+
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from app.sql.database import Base
+from sqlalchemy.ext.declarative import declarative_base
 
+Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
