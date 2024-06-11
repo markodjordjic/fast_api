@@ -21,7 +21,7 @@ class TestUsers(unittest.TestCase):
 
         actual = response.json()
     
-        self.assertEqual(actual, expected)
+        self.assertListEqual(actual, expected)
 
     def test_read_users_me(self) -> None:
 
@@ -33,7 +33,7 @@ class TestUsers(unittest.TestCase):
 
         actual = response.json()
     
-        self.assertEqual(actual, expected)
+        self.assertDictEqual(actual, expected)
 
     def test_read_user(self) -> None:
 
@@ -45,7 +45,37 @@ class TestUsers(unittest.TestCase):
 
         actual = response.json()
     
-        self.assertEqual(actual, expected)
+        self.assertDictEqual(actual, expected)
+
+class TestItems(unittest.TestCase):
+
+    def __init__(self, methodName: str = "runTest") -> None:
+        super().__init__(methodName)
+ 
+    def setUp(self) -> None:
+        self.app = TestClient(app=app)
+
+    def test_read_items(self) -> None:
+
+        expected = {
+            "plumbus": {
+                "name": "Plumbus"
+            }, 
+            "gun": {
+                "name": "Portal Gun"
+            }
+        }
+
+        headers = {'x-token': 'fake-super-secret-token'}
+
+        params = {'token': 'jessica'}
+
+        response = self.app.get("/items/", headers=headers, params=params)
+
+        actual = response.json()
+    
+        self.assertDictEqual(actual, expected)
+
 
 
 def test_suite():
@@ -54,6 +84,7 @@ def test_suite():
     suite.addTest(TestUsers('test_read_users'))
     suite.addTest(TestUsers('test_read_users_me'))
     suite.addTest(TestUsers('test_read_user'))
+    suite.addTest(TestItems('test_read_items'))
 
     return suite
 
