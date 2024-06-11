@@ -1,12 +1,12 @@
-FROM python:3.11
+FROM python:3.11-slim
+
 
 WORKDIR /opt
 
 COPY app ./app
-COPY tests ./tests
 COPY requirements.txt ./requirements.txt
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 ENV PYTHONPATH="app/"
-ENV PYTHONUNBUFFERED 1
+

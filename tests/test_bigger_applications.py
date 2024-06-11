@@ -11,7 +11,6 @@ class TestExercise(unittest.TestCase):
     def setUp(self) -> None:
         self.app = TestClient(app=app)
 
-    @unittest.skip
     def test_root(self) -> None:
         """Test is just a placeholder
 
