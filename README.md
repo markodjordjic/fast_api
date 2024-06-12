@@ -5,7 +5,7 @@ Examples of how to use FastAPI library.
 # Running in Docker
 Build the image.
 ```
-docker image build --rm --file Testing.Dockerfile --no-cache --tag fast_api_lessons .
+docker image build --rm --file Testing.Dockerfile --no-cache --tag fast_api .
 ```
 Run tests with unittest
 ```

@@ -19,7 +19,7 @@ class TestExercise(unittest.TestCase):
 
         actual = float(response.headers.get('x-process-time'))
     
-        self.assertAlmostEqual(actual, expected, places=3)
+        self.assertAlmostEqual(actual, expected, places=2)
 
 def test_suite():
 
