@@ -8,58 +8,25 @@ class TestExercise(unittest.TestCase):
     def __init__(self, methodName: str = "runTest") -> None:
         super().__init__(methodName)
  
-    @classmethod
     def setUp(self) -> None:
         self.app = TestClient(app=app)
 
-    def test_update_item(self) -> None:
+    def test_send_notification(self) -> None:
 
-        response = self.app.put("/update_item/800/?q=How%20many%20are%20there?")
+        expected = {'message': 'Message sent'}
+    
+        response = self.app.post("/send-notification/email.adress%40email.com")
 
-        expected = {
-            'item_id': 800, 
-            'q': 'How many are there?', 
-            'item': {
-                'name': 'Cake mould', 
-                'description': 
-                '8" diameter mould from metal.', 
-                'base_price': 499.0, 
-                'tax': 
-                18.0
-            }}
         actual = response.json()
     
-        self.assertEqual(actual, expected)
-
-    def test_update_tagged_item(self) -> None:
-
-        response = self.app.put("/update_tagged_item/800/?q=How%20many%20are%20there?")
-
-        expected = {
-            'item_id': 800, 
-            'q': 'How many are there?', 
-            'item': {
-                'name': 'Cake mould', 
-                'description': 
-                '8" diameter mould from metal.', 
-                'base_price': 499.0, 
-                'tax':  18.0,
-                'tags': [
-                    'discount', 'standard offer'
-                ]
-            }
-        }
-        actual = response.json()
-    
-        self.assertEqual(actual, expected)
+        self.assertDictEqual(actual, expected)
 
 
 
 def test_suite():
 
     suite = unittest.TestSuite()
-    suite.addTest(TestExercise('test_update_item'))
-    suite.addTest(TestExercise('test_update_tagged_item'))
+    suite.addTest(TestExercise('test_send_notification'))
 
     return suite
 
