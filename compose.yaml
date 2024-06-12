@@ -1,10 +1,10 @@
-version: '3.11'
+version: '3.11-slim'
 
 services:
   fastapi-lessons:
     build:
       context: .
       dockerfile: Deployment.Dockerfile
-    command: uvicorn "bigger_applications:app" --host 0.0.0.0 --port 3000
+    command: uvicorn "background_tasks:app" --host 0.0.0.0 --port 3000
     ports:
       - "3000:3000"
