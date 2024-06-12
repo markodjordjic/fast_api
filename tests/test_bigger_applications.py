@@ -76,6 +76,33 @@ class TestItems(unittest.TestCase):
     
         self.assertDictEqual(actual, expected)
 
+    def test_read_item(self) -> None:
+
+        expected = {'name': 'Plumbus', 'item_id': 'plumbus'}
+
+        headers = {'x-token': 'fake-super-secret-token'}
+
+        params = {'token': 'jessica'}
+
+        response = self.app.get("/items/plumbus", headers=headers, params=params)
+
+        actual = response.json()
+    
+        self.assertDictEqual(actual, expected)
+
+    def test_update_item(self) -> None:
+
+        expected = {'item_id': 'plumbus', 'name': 'The great Plumbus'}
+
+        headers = {'x-token': 'fake-super-secret-token'}
+
+        params = {'token': 'jessica'}
+
+        response = self.app.put("/items/plumbus", headers=headers, params=params)
+
+        actual = response.json()
+    
+        self.assertDictEqual(actual, expected)
 
 
 def test_suite():
@@ -85,6 +112,8 @@ def test_suite():
     suite.addTest(TestUsers('test_read_users_me'))
     suite.addTest(TestUsers('test_read_user'))
     suite.addTest(TestItems('test_read_items'))
+    suite.addTest(TestItems('test_read_item'))
+    suite.addTest(TestItems('test_update_item'))
 
     return suite
 
