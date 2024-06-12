@@ -31,9 +31,7 @@ class TestExercise(unittest.TestCase):
             "tax": 11.0,
         }
 
-        item = Item(
-            **item_specification
-        )
+        item = Item(**item_specification)
 
         response = self.app.put("/items/800", json=item.model_dump())
 
