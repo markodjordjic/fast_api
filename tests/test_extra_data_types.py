@@ -6,13 +6,19 @@ import unittest
 from app.extra_data_types import app
 
 
+class Item(BaseModel):
+    start_datetime: datetime
+    end_datetime: datetime
+    process_after: timedelta
+    repeat_at: time | None
+
 class TestExercise(unittest.TestCase):
 
     def __init__(self, methodName: str = "runTest") -> None:
         super().__init__(methodName)
  
     @classmethod
-    def setUp(self) -> None:
+    def setUpClass(self) -> None:
         self.app = TestClient(app=app)
 
     def test_read_items(self) -> None:
@@ -26,12 +32,6 @@ class TestExercise(unittest.TestCase):
             'start_process': '2024-06-11T12:00:00', 
             'duration': -863400.0
         }
-
-        class Item(BaseModel):
-            start_datetime: datetime
-            end_datetime: datetime
-            process_after: timedelta
-            repeat_at: time | None
 
         item_specification = {
             'start_datetime': datetime(

@@ -10,7 +10,7 @@ class TestExercise(unittest.TestCase):
         super().__init__(methodName)
  
     @classmethod
-    def setUp(self) -> None:
+    def setUpClass(self) -> None:
         self.app = TestClient(app=app)
 
     def test_create_user(self) -> None:
@@ -36,10 +36,9 @@ class TestExercise(unittest.TestCase):
     
         self.assertEqual(actual, expected)
 
-        #response = self.app.post("/delete_user/", json=user_create.model_dump())
-
     @classmethod
     def tearDownClass(cls) -> None:
+        
         return super().tearDownClass()
 
 def test_suite():

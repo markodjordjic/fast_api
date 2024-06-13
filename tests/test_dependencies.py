@@ -74,13 +74,9 @@ class TestSubDependencies(unittest.TestCase):
 
     def test_read_query_wh_query(self) -> None:
 
-        expected = {
-            'q_or_cookie': 'test query'
-        }
+        expected = {'q_or_cookie': 'test query'}
 
-        parameters = {
-            'q': 'test query'
-        }
+        parameters = {'q': 'test query'}
 
         response = self.app.get("/items/", params=parameters)
 
@@ -127,10 +123,7 @@ class TestPathOperationDecorators(unittest.TestCase):
 
         expected = 400
 
-        headers = {
-            'x-token': 'some-token',
-            'x-key': 'some-key'
-        }
+        headers = {'x-token': 'some-token', 'x-key': 'some-key'}
 
         response = self.app.get("/items/", headers=headers)
 

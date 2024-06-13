@@ -10,7 +10,7 @@ class TestExercise(unittest.TestCase):
         super().__init__(methodName)
  
     @classmethod
-    def setUp(self) -> None:
+    def setUpClass(self) -> None:
         self.app = TestClient(app=app)
 
     def test_update_items(self) -> None:
